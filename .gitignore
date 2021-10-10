@@ -1,2 +1,6 @@
 # Vagrant
 .vagrant/
+
+# TLS
+*.key
+*.crt

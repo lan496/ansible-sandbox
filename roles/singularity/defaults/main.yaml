@@ -1,0 +1,6 @@
+# in this file add variables to be used in the tasks
+singularity_version: "3.8.0"
+
+singularity_download_dir: "{{ ansible_env.HOME + '/.ansible/tmp/downloads' }}"
+
+singularity_make_jobs: 16

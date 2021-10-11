@@ -18,6 +18,7 @@ vagrant ssh-config
 
 ```shell
 python -m pip install -r requirements.txt
+pre-commit install
 ```
 
 ## Create custom role under `roles/`

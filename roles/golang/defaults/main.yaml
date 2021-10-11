@@ -5,4 +5,4 @@ golang_download_dir: "{{ ansible_env.HOME + '/.ansible/tmp/downloads' }}"
 golang_install_dir: '/usr/local/go/{{ golang_version }}'
 
 # Location for GOPATH environment variable
-golang_gopath:
+golang_gopath: "{{ ansible_env.HOME }}"

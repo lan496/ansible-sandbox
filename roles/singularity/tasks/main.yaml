@@ -1,0 +1,75 @@
+# Add task instructions here
+- name: Gather variables
+  include_vars: vars/default.yml
+
+- name: Uninstall singularity if exists
+  become: true
+  package:
+    state: absent
+    name: singularity
+
+- name: Install prerequisites
+  become: true
+  package:
+    state: present
+    name: "{{ singularity_software_base }}"
+  register: _install_result
+  until: _install_result is success
+  retries: 10
+  delay: 2
+
+- name: Get golang version
+  command: go version
+  register: go_version
+  changed_when: false
+  environment:
+    PATH: '{{ golang_install_dir }}/bin:{{ ansible_env.PATH }}'
+    GOROOT: '{{ golang_install_dir }}'
+    GOPATH: '{{ golang_gopath }}'
+
+- name: Display golang version
+  debug:
+    var: go_version
+
+- name: Create download directory
+  file:
+    state: directory
+    mode: 'u=rwx,go=rx'
+    dest: '{{ singularity_download_dir }}'
+
+- name: Download singularity
+  get_url:
+    url: 'https://github.com/hpcng/singularity/releases/download/v{{ singularity_version }}/singularity-{{ singularity_version }}.tar.gz'
+    dest: '{{ singularity_download_dir }}'
+    mode: 'u=rw,go=r'
+  register: _download_result
+
+- name: Unarchive singularity
+  unarchive:
+    src: '{{ _download_result.dest }}'
+    remote_src: yes
+    dest: '{{ singularity_download_dir }}'
+    mode: 'u=rwx,go=rx'
+    creates: '{{ singularity_download_dir }}/singularity-{{ singularity_version }}/mconfig'
+
+- name: Configure singularity
+  command: './mconfig'
+  args:
+    chdir: '{{ singularity_download_dir }}/singularity-{{ singularity_version }}'
+    creates: '{{ singularity_download_dir }}/singularity-{{ singularity_version }}/builddir'
+  environment:
+    PATH: '{{ golang_install_dir }}/bin:{{ ansible_env.PATH }}'
+    GOROOT: '{{ golang_install_dir }}'
+    GOPATH: '{{ golang_gopath }}'
+
+- name: Make singularity
+  command: "make -j {{ singularity_make_jobs }}"
+  args:
+    chdir: '{{ singularity_download_dir }}/singularity-{{ singularity_version }}/builddir'
+  register: _singularity_make
+
+- name: Install singularity
+  become: true
+  make:
+    target: install
+    chdir: '{{ singularity_download_dir }}/singularity-{{ singularity_version }}/builddir'

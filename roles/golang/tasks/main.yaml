@@ -1,0 +1,52 @@
+# Add task instructions here
+- name: Create download directory
+  file:
+    state: directory
+    mode: 'u=rwx,go=rx'
+    dest: '{{ golang_download_dir }}'
+
+- name: Download golang
+  get_url:
+    url: 'https://golang.org/dl/go{{ golang_version }}.linux-amd64.tar.gz'
+    dest: '{{ golang_download_dir }}'
+    mode: 'u=rw,go=r'
+  register: _download_result
+
+- name: Create golang installation directory
+  become: yes
+  file:
+    state: directory
+    owner: root
+    group: root
+    mode: 'u=rwx,go=rx'
+    dest: '{{ golang_install_dir }}'
+
+- name: Install golang
+  become: yes
+  unarchive:
+    src: '{{ _download_result.dest }}'
+    remote_src: yes
+    extra_opts: '--strip-components=1'
+    dest: '{{ golang_install_dir }}'
+    owner: root
+    group: root
+    mode: 'u=rwx,go=rx'
+    creates: '{{ golang_install_dir }}/bin'
+
+- name: make sure /etc/profile.d exists
+  become: yes
+  file:
+    path: /etc/profile.d
+    state: directory
+    owner: root
+    group: root
+    mode: 'u=rwx,go=rx'
+
+- name: export golang-environment variables
+  become: yes
+  template:
+    src: golang.sh.j2
+    dest: /etc/profile.d/golang.sh
+    owner: root
+    group: root
+    mode: 'u=rw,go=r'

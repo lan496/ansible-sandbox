@@ -1,13 +1,10 @@
-- hosts: "{{ build_hosts | default('vagrant') }}"
-  tasks:
-  - name: Set up timezone
-    become: true
-    timezone:
-      name: Asia/Tokyo    # JST
-
-- name: Set up singularity
+- name: Set up
   hosts: "{{ build_hosts | default('vagrant') }}"
   roles:
+  - name: set up locales
+    role: common/locale
+    vars:
+      locale_timezone: "Asia/Tokyo"  # JST
   - name: Install vim
     role: vim
   - name: Install golang

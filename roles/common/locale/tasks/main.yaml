@@ -1,0 +1,18 @@
+# Add task instructions here
+- name: Set up timezone
+  timezone:
+    name: "{{ locale_timezone }}"
+
+# See https://serverfault.com/questions/959026/how-do-i-generate-and-set-the-locale-using-ansible
+- name: Get current locale and language configuration
+  command: localectl status
+  register: locale_status
+  changed_when: false
+
+- name: Parse 'LANG' from current locale and language configuration
+  set_fact:
+    _locale_lang: "{{ locale_status.stdout | regex_search('LANG=([^\n]+)', '\\1') | first }}"
+
+- name: Configure locale to '{{ locale_locale }}'
+  command: localectl set-locale LANG={{ locale_locale }}
+  changed_when: _locale_lang != locale_locale

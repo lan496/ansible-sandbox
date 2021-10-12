@@ -1,0 +1,7 @@
+# Select timezone from following command results
+
+# timedatectl list-timezones
+locale_timezone: "UTC"
+
+# localectl list-locales
+locale_locale: "en_US.UTF-8"

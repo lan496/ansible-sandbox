@@ -1,0 +1,14 @@
+# Add task instructions here
+- name: Install vim
+  become: true
+  apt:
+    name: vim
+
+- name: Configure basic vimrc
+  become: true
+  copy:
+    src: .vimrc
+    dest: "{{ ansible_env.HOME }}"
+    owner: root
+    group: root
+    mode: 'u=rw,go=r'

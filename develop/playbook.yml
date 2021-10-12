@@ -1,13 +1,15 @@
-- name: set up
-  hosts: "{{ build_hosts | default('vagrant') }}"
+- hosts: "{{ build_hosts | default('vagrant') }}"
+  tasks:
+  - name: Set up timezone
+    become: true
+    timezone:
+      name: Asia/Tokyo    # JST
 
-  # tasks:
-  # - name: add the user for provisioning
-  #   become: true
-  #   ansible.builtin.user:
-  #     name: "{{ provision_user }}"
-  #     groups: sudo
+- name: Set up singularity
+  hosts: "{{ build_hosts | default('vagrant') }}"
   roles:
+  - name: Install vim
+    role: vim
   - name: Install golang
     role: golang
     vars:

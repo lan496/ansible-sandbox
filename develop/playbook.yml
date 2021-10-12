@@ -1,10 +1,6 @@
-- name: Set up
+- name: Set up common
   hosts: "{{ build_hosts | default('vagrant') }}"
   roles:
-  - name: set up locales
-    role: common/locale
-    vars:
-      locale_timezone: "Asia/Tokyo"  # JST
   - name: Install vim
     role: vim
   - name: Install golang

@@ -21,7 +21,31 @@ python -m pip install -r requirements.txt
 pre-commit install
 ```
 
-## Create custom role under `roles/`
+```shell
+ansible-galaxy install nvidia.nvidia_driver
+```
+
+## Usage
+
+0. Create a provision user: `ansible`
+at remote nodes
+```shell
+adduser ansible
+usermod -aG sudo ansible
+```
+
+1. Connect to remote nodes
+at control node
+```shell
+ssh-copy-id -i ~/.ssh/id_****.pub ansible@<hostname>
+# checking
+ansible <pattern> -i <inventory> -m ping
+```
+
+
+## Developments
+
+### Create custom role under `roles/`
 ```shell
 cookiecutter -o roles cookiecutter-ansible-role
 ```
@@ -29,5 +53,5 @@ cookiecutter -o roles cookiecutter-ansible-role
 ## Misc
 
 ```shell
-ansible-playbook -i inventory.yml playbook.yml [-e build_hosts=****]
+ansible-playbook -i inventory.yml playbook.yml --ask-become-pass [-e build_hosts=****]
 ```

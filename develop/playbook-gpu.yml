@@ -1,0 +1,11 @@
+- name: Set up common
+  include: playbook.yml
+
+- name: Set up gpu specific stuffs
+  hosts: "{{ build_hosts | default('vagrant') }}"
+  become: true
+  roles:
+  - name: Install nvidia driver
+    role: nvidia.nvidia_driver  # noqa
+    # vars:
+    # - nvidia_driver_persistence_mode_on: no

@@ -6,3 +6,6 @@
 *.crt
 
 *.log
+
+# roles
+roles/nvidia.nvidia_driver/*

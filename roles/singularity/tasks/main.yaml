@@ -63,10 +63,9 @@
     GOPATH: '{{ golang_gopath }}'
 
 - name: Make singularity
-  command: "make -j {{ singularity_make_jobs }}"
-  args:
+  community.general.make:
     chdir: '{{ singularity_download_dir }}/singularity-{{ singularity_version }}/builddir'
-  register: _singularity_make
+    jobs: "{{ singularity_make_jobs }}"
 
 - name: Install singularity
   become: true

@@ -42,6 +42,14 @@ ssh-copy-id -i ~/.ssh/id_****.pub ansible@<hostname>
 ansible <pattern> -i <inventory> -m ping
 ```
 
+### Set up GPU nodes w/o Slurm
+```shell
+ansible-playbook develop/playbook-gpu.yml -e build_hosts=gpu_p --ask-become-pass
+```
+
+### Set up Slurm cluster
+
+See [ldif/README.md](ldif/README.md)
 
 ## Developments
 

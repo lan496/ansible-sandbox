@@ -6,6 +6,6 @@
   become: true
   roles:
   - name: Install nvidia driver
-    role: nvidia.nvidia_driver  # noqa
+    role: nvidia.nvidia_driver
     # vars:
     # - nvidia_driver_persistence_mode_on: no

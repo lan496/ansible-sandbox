@@ -4,7 +4,7 @@
 
 2. Install OpenLDAP
 ```shell
-apt install slapd ldap-utils nslcd
+apt install slapd ldap-utils nslcd libnss-ldapd libpam-ldapd
 dpkg-reconfigure slapd
 ```
 

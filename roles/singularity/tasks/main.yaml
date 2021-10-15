@@ -52,6 +52,13 @@
     mode: 'u=rwx,go=rx'
     creates: '{{ singularity_download_dir }}/singularity-{{ singularity_version }}/mconfig'
 
+- name: go dep
+  command: 'go get -u -v github.com/golang/dep/cmd/dep'
+  environment:
+    PATH: '{{ golang_install_dir }}/bin:{{ ansible_env.PATH }}'
+    GOROOT: '{{ golang_install_dir }}'
+    GOPATH: '{{ golang_gopath }}'
+
 - name: Configure singularity
   command: './mconfig'
   args:
@@ -63,9 +70,13 @@
     GOPATH: '{{ golang_gopath }}'
 
 - name: Make singularity
-  community.general.make:
+  command: "make -j {{ singularity_make_jobs }}"
+  args:
     chdir: '{{ singularity_download_dir }}/singularity-{{ singularity_version }}/builddir'
-    jobs: "{{ singularity_make_jobs }}"
+  environment:
+    PATH: '{{ golang_install_dir }}/bin:{{ ansible_env.PATH }}'
+    GOROOT: '{{ golang_install_dir }}'
+    GOPATH: '{{ golang_gopath }}'
 
 - name: Install singularity
   become: true
